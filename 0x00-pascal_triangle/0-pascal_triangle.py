@@ -1,5 +1,5 @@
 """
-Pascal's triangle
+Pascal's tri
 """
 
 
@@ -10,11 +10,11 @@ def pascal_triangle(n):
     """
     if n <= 0:
         return []
-    triangle = [[1]]
-    for i in range(1, n):
-        row = [1]
-        last_row = triangle[-1]
-        row += [sum(pair) for pair in zip(last_row, last_row[1:])]
-        row.append(1)
-        triangle.append(row)
-    return triangle
+    tri = [[1]]
+    for x in range(1, n):
+        pascal_row = [1]
+        last_pascal_row = tri[-1]
+        pascal_row += [sum(pair) for pair in zip(last_pascal_row, last_pascal_row[1:])]
+        pascal_row.append(1)
+        tri.append(pascal_row)
+    return tri
