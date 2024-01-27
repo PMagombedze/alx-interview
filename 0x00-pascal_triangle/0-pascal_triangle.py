@@ -10,11 +10,14 @@ def pascal_triangle(n):
     """
     if n <= 0:
         return []
-    tri = [[1]]
-    for x in range(1, n):
-        pascal_row = [1]
-        last_pascal_row = tri[-1]
-        pascal_row += [sum(pair) for pair in zip(last_pascal_row, last_pascal_row[1:])]
-        pascal_row.append(1)
-        tri.append(pascal_row)
-    return tri
+    
+    triangle = [[1]]
+    for i in range(1, n):
+        row = [1]
+        last_row = triangle[i - 1]
+        for j in range(1, i):
+            row.append(last_row[j - 1] + last_row[j])
+        row.append(1)
+        triangle.append(row)
+    
+    return triangle
