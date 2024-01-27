@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+
 """
 log parsing
 """
@@ -34,14 +35,13 @@ def handle_sigint(sig, frame):
 
 signal.signal(signal.SIGINT, handle_sigint)
 
-try:
-    for line in sys.stdin:
-        match = log_.match(line)
-        if match:
-            count += int(match.group(4))
-            status_codes[int(match.group(3))] += 1
+
+for line in sys.stdin:
+    match = log_.match(line)
+    if match:
+        count += int(match.group(4))
+        status_codes[int(match.group(3))] += 1
         line_count += 1
-        if line_count % 10 == 0:
-            print_stats()
-except KeyboardInterrupt:
-    pass
+    if line_count % 10 == 0:
+        print_stats()
+
