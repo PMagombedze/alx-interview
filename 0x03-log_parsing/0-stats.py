@@ -1,15 +1,19 @@
 #!/usr/bin/python3
 
 
+"""
+log parsing
+"""
+
+
 import signal
 import sys
 import re
 from collections import defaultdict
 
-
+# Initialize variables
 total_size = 0
 status_codes = defaultdict(int)
-
 
 def print_stats(signal, frame):
     """Print statistics when receiving a SIGINT (CTRL+C)"""
@@ -18,7 +22,7 @@ def print_stats(signal, frame):
         print(f"{code}: {status_codes[code]}")
     sys.exit(0)
 
-
+# Set up signal handler for SIGINT
 signal.signal(signal.SIGINT, print_stats)
 
 try:
@@ -34,3 +38,5 @@ try:
 
 except KeyboardInterrupt:
     print_stats(None, None)
+
+
