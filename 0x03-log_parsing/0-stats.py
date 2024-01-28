@@ -1,47 +1,33 @@
-#!/usr/bin/python3
-
-
-"""
-log parsing
-"""
-
-
-import sys
 import signal
+import sys
 import re
+from collections import defaultdict
 
 
-count = 0
-status_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
-line_count = 0
-
-log_ = re.compile(r'(\S+) - \[(.+)\] "GET /projects/260 HTTP/1.1" (\d+) (\d+)')
+total_size = 0
+status_codes = defaultdict(int)
 
 
-def print_stats():
-    """printing stats"""
-    global count, status_codes
-    print(f"Total file size: {count}")
+def print_stats(signal, frame):
+    """Print statistics when receiving a SIGINT (CTRL+C)"""
+    print(f"File size: {total_size}")
     for code in sorted(status_codes.keys()):
-        if status_codes[code] > 0:
-            print(f"{code}: {status_codes[code]}")
-
-
-def handle_sigint(sig, frame):
-    """handler"""
-    print_stats()
+        print(f"{code}: {status_codes[code]}")
     sys.exit(0)
 
 
-signal.signal(signal.SIGINT, handle_sigint)
+signal.signal(signal.SIGINT, print_stats)
 
+try:
+    for i, line in enumerate(sys.stdin, start=1):
+        match = re.search(r'(\d{3}) (\d+)$', line)
+        if match:
+            status_code, file_size = match.groups()
+            total_size += int(file_size)
+            status_codes[status_code] += 1
 
-for line in sys.stdin:
-    match = log_.match(line)
-    if match:
-        count += int(match.group(4))
-        status_codes[int(match.group(3))] += 1
-        line_count += 1
-    if line_count % 10 == 0:
-        print_stats()
+        if i % 10 == 0:
+            print_stats(None, None)
 
+except KeyboardInterrupt:
+    print_stats(None, None)
