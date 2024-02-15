@@ -1,21 +1,36 @@
 #!/usr/bin/node
 
-const request = require("request");
+const request = require('request'); // Use request for HTTP requests
 
-request(
-  "https://swapi-api.alx-tools.com/api/films" + process.argv[2],
-  function (err, res, body) {
-    if (err) throw err;
-    const actors = JSON.parse(body).characters;
-    Order(actors, 0);
-  }
-);
+function fetchCharacterNames(filmId) {
+  const url = `https://swapi-api.alx-tools.com/api/films/${filmId}/`;
 
-const Order = (actors, n) => {
-  if (n === actors.length) return;
-  request(actors[n], function (err, res, body) {
-    if (err) throw err;
-    console.log(JSON.parse(body).name);
-    Order(actors, n + 1);
+  request(url, async (err, res, body) => {
+    if (err) {
+      console.error('Error fetching data:', err);
+      return;
+    }
+
+    const characters = JSON.parse(body).characters;
+
+    const characterNames = await Promise.all(
+      characters.map((characterUrl) => {
+        return new Promise((resolve, reject) => {
+          request(characterUrl, (err, res, charBody) => {
+            if (err) {
+              console.error('Error fetching character data:', err);
+              reject(err);
+            } else {
+              resolve(JSON.parse(charBody).name);
+            }
+          });
+        });
+      })
+    );
+
+    characterNames.forEach((name) => console.log(name));
   });
-};
+}
+
+const filmId = process.argv[2];
+fetchCharacterNames(filmId);
