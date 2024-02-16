@@ -79,8 +79,7 @@ def solveNQueen(board, row, queens, solutions):
             tmp_board = newBoard(board)
             tmp_board[row][c] = "Q"
             outPut(tmp_board, row, c)
-            solutions = solveNQueen(tmp_board, row + 1,
-                                        queens + 1, solutions)
+            solutions = solveNQueen(tmp_board, row + 1, queens + 1, solutions)
 
     return (solutions)
 
