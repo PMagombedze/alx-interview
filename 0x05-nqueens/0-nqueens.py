@@ -1,56 +1,102 @@
+#!/usr/bin/python3
+"""Solves the N-queens puzzle.
+"""
 import sys
 
-def solveNQueens(n):
-    def place(pos, filled):
-        for i in range(len(filled)):
-            if filled[i] == pos or \
-                filled[i] - i == pos - len(filled) or \
-                filled[i] + i == pos + len(filled):
-                return False
-        return True
 
-    def place_queens(n, index, filled, all_solutions):
-        if index == n:
-            all_solutions.append(filled[:])
-            return
+def board(n):
+    """Initialize board"""
+    board = []
+    [board.append([]) for i in range(n)]
+    [row.append(' ') for i in range(n) for row in board]
+    return (board)
 
-        for i in range(n):
-            if place(i, filled):
-                filled.append(i)
-                place_queens(n, index + 1, filled, all_solutions)
-                filled.pop()
 
-    all_solutions = []
-    place_queens(n, 0, [], all_solutions)
-    return all_solutions
+def newBoard(board):
+    """Return a deepcopy of a chessboard."""
+    if isinstance(board, list):
+        return list(map(newBoard, board))
+    return (board)
 
-def perfect(solutions, n):
-    for sol in solutions:
-        result = []
-        for i in range(n):
-            row = ['0'] * n
-            row[sol[i]] = '1'
-            result.append(row)
-        print(result)
 
-def main():
+def solution(board):
+    """Return the list of lists representation of a solved chessboard."""
+    solution = []
+    for r in range(len(board)):
+        for c in range(len(board)):
+            if board[r][c] == "Q":
+                solution.append([r, c])
+                break
+    return (solution)
+
+
+def outPut(board, row, col):
+    """X out spots on a chessboard.
+     """
+    for c in range(col + 1, len(board)):
+        board[row][c] = "x"
+    for c in range(col - 1, -1, -1):
+        board[row][c] = "x"
+    for r in range(row + 1, len(board)):
+        board[r][col] = "x"
+    for r in range(row - 1, -1, -1):
+        board[r][col] = "x"
+    c = col + 1
+    for r in range(row + 1, len(board)):
+        if c >= len(board):
+            break
+        board[r][c] = "x"
+        c += 1
+    c = col - 1
+    for r in range(row - 1, -1, -1):
+        if c < 0:
+            break
+        board[r][c]
+        c -= 1
+    c = col + 1
+    for r in range(row - 1, -1, -1):
+        if c >= len(board):
+            break
+        board[r][c] = "x"
+        c += 1
+    c = col - 1
+    for r in range(row + 1, len(board)):
+        if c < 0:
+            break
+        board[r][c] = "x"
+        c -= 1
+
+
+def solveNQueen(board, row, queens, solutions):
+    """Recursively solve an N-queens puzzle.
+    """
+    if queens == len(board):
+        solutions.append(solution(board))
+        return (solutions)
+
+    for c in range(len(board)):
+        if board[row][c] == " ":
+            tmp_board = newBoard(board)
+            tmp_board[row][c] = "Q"
+            outPut(tmp_board, row, c)
+            solutions = solveNQueen(tmp_board, row + 1,
+                                        queens + 1, solutions)
+
+    return (solutions)
+
+
+if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
-
-    try:
-        N = int(sys.argv[1])
-    except ValueError:
+    if sys.argv[1].isdigit() is False:
         print("N must be a number")
         sys.exit(1)
-
-    if N < 4:
+    if int(sys.argv[1]) < 4:
         print("N must be at least 4")
         sys.exit(1)
 
-    solutions = solveNQueens(N)
-    perfect(solutions, N)
-
-if __name__ == "__main__":
-    main()
-
+    board = board(int(sys.argv[1]))
+    solutions = solveNQueen(board, 0, 0, [])
+    for x in solutions:
+        print(x)
