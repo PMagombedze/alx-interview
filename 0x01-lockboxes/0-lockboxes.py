@@ -9,13 +9,11 @@ LockBoxes
 def canUnlockAll(boxes):
     """Can unlock all
     """
-    unlockedBoxes = set([0])
-    queue = [0]
-
-    while queue:
-        current = queue.pop(0)
-        for keys in boxes[current]:
-            if keys not in unlockedBoxes:
-                unlockedBoxes.add(keys)
-                queue.append(keys)
-    return len(unlockedBoxes) == len(boxes)
+    box_len = len(boxes)
+    unlocked_ = [0]
+    for id_, box in enumerate(boxes):
+        if box:
+            for x in box:
+                if 0 <= x < box_len and x not in unlocked_ and x != id_:
+                    unlocked_.append(x)
+    return len(unlocked_) == len(boxes)
