@@ -2,13 +2,15 @@
 
 
 def rotate_2d_matrix(matrix):
-    """rotate 2d matrix"""
-    matrix_size = len(matrix) - 1
-    for i in range(len(matrix) // 2):
-        for j in range(i, matrix_size - i):
-            (
-                matrix[i][j], matrix[~j][i], matrix[~i][~j], matrix[j][~i]
-            ) = (
-                matrix[~j][i], matrix[~i][~j], matrix[j][~i], matrix[i][j]
-            )
-
+    """
+    Rotates a 2D matrix 90 degrees clockwise.
+    """
+    n = len(matrix)
+    for x in range(n // 2):
+        a, b = x, n - 1 - x
+        for i in range(a, b):
+            start = matrix[x][i]
+            matrix[x][i] = matrix[n - 1 - i][x]
+            matrix[n - 1 - i][x] = matrix[n - 1 - x][n - 1 - i]
+            matrix[n - 1 - x][n - 1 - i] = matrix[i][n - 1 - x]
+            matrix[i][n - 1 - x] = start
