@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-
+"""
+2d matrix rotation
+"""
 
 def transpose(matrix):
     """matrix transpose"""
