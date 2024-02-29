@@ -16,6 +16,8 @@ def makeChange(coins, total):
             solutionSet[amount] = min(
                 solutionSet[amount], solutionSet[amount - coin] + 1
             )
+    if total <= 0:
+        return 0
     if solutionSet[total] == num:
         return -1
     else:
