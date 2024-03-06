@@ -9,16 +9,19 @@ coin problem
 def makeChange(coins, total):
     """make change"""
     num = float('inf')
-    solutionSet = [num] * (total + 1)
-    solutionSet[0] = 0
-    for coin in coins:
-        for amount in range(coin, total + 1):
-            solutionSet[amount] = min(
-                solutionSet[amount], solutionSet[amount - coin] + 1
-            )
     if total <= 0:
         return 0
-    if solutionSet[total] == num:
+
+    solutionSet = [float('inf')] * (total + 1)
+    solutionSet[0] = 0
+
+    for amount in range(1, total + 1):
+        for coin in coins:
+            sm = solutionSet[amount]
+            if coin <= amount and solutionSet[amount - coin] + 1 < sm:
+                solutionSet[amount] = solutionSet[amount - coin] + 1
+
+    if solutionSet[total] == float('inf'):
         return -1
-    else:
-        return solutionSet[total]
+
+    return solutionSet[total]
