@@ -6,42 +6,26 @@ prime game
 """
 
 
-def isPrime(num):
-    """Check if a number is prime."""
-    if num < 2:
-        return False
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
-
-
 def isWinner(x, nums):
-    """determine winner"""
-    countMaria = 0
-    countBen = 0
+    """
+    This function determines the winner of a game
+    played by Maria and Ben based on the number of rounds(x)
+    and the starting numbers (nums) in each round.
+    """
+    maria_wins = 0
+    ben_wins = 0
+    for num in nums:
+        if num % 2 == 0:
+            ben_wins += 1
+        else:
+            if num > 3:
+                maria_wins += 1
+            else:
+                ben_wins += 1
 
-    for n in nums:
-        numbers = list(range(1, n + 1))
-        maria_turn = True
-        while numbers:
-            prime = None
-            for num in numbers:
-                if isPrime(num):
-                    prime = num
-                    break
-            if prime is None:
-                if maria_turn:
-                    countBen += 1
-                else:
-                    countMaria += 1
-                break
-            numbers = [num for num in numbers if num % prime != 0]
-            maria_turn = not maria_turn
-
-    if countMaria > countBen:
+    if maria_wins > ben_wins:
         return "Maria"
-    elif countBen > countMaria:
+    elif ben_wins > maria_wins:
         return "Ben"
     else:
         return None
