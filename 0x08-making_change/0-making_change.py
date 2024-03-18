@@ -7,21 +7,16 @@ coin problem
 
 
 def makeChange(coins, total):
-    """make change"""
-    num = float('inf')
-    if total <= 0:
-        return 0
-
-    solutionSet = [float('inf')] * (total + 1)
-    solutionSet[0] = 0
-
+    """
+    This function determines the fewest number of
+    coins needed to meet a given amount.
+    """
+    min_coins = [float('inf')] * (total + 1)
+    min_coins[0] = 0
     for amount in range(1, total + 1):
         for coin in coins:
-            sm = solutionSet[amount]
-            if coin <= amount and solutionSet[amount - coin] + 1 < sm:
-                solutionSet[amount] = solutionSet[amount - coin] + 1
+            if coin <= amount:
+                new_coins = min_coins[amount - coin] + 1
+                min_coins[amount] = min(min_coins[amount], new_coins)
 
-    if solutionSet[total] == float('inf'):
-        return -1
-
-    return solutionSet[total]
+    return min_coins[total] if min_coins[total] != float('inf') else -1
