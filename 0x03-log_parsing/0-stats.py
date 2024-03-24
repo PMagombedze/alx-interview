@@ -5,30 +5,41 @@
 log parsing
 """
 
-import random
+
 import sys
-import datetime
-import time
 
+def print_statistics(total_size, status_counts):
+    print(f"File size: {total_size}")
+    for status_code in sorted(status_counts):
+        count = status_counts[status_code]
+        print(f"{status_code}: {count}")
 
-def generate_random_ip():
-    return ".".join(str(random.randint(1, 255)) for _ in range(4))
+def process_logs():
+    total_size = 0
+    status_counts = {}
 
+    try:
+        for i, line in enumerate(sys.stdin, start=1):
+            line = line.strip()
+            if not line:
+                continue
 
-def generate_random_status_code():
-    return random.choice([200, 301, 400, 401, 403, 404, 405, 500])
+            parts = line.split()
+            if len(parts) != 7 or parts[2] != 'GET' or not parts[3].startswith('/projects/260'):
+                continue
 
+            try:
+                file_size = int(parts[6])
+                status_code = int(parts[5])
+            except ValueError:
+                continue
 
-def generate_log_entry():
-    ip_address = generate_random_ip()
-    current_time = datetime.datetime.now()
-    status_code = generate_random_status_code()
-    random_number = random.randint(1, 1024)
-    return f"{ip_address} - [{current_time}] \"GET /projects/260 HTTP/1.1\" {status_code} {random_number}\n"
+            total_size += file_size
+            status_counts[status_code] = status_counts.get(status_code, 0) + 1
 
+            if i % 10 == 0:
+                print_statistics(total_size, status_counts)
+    except KeyboardInterrupt:
+        print_statistics(total_size, status_counts)
 
-for i in range(10000):
-    time.sleep(random.random())
-    log_entry = generate_log_entry()
-    sys.stdout.write(log_entry)
-    sys.stdout.flush()
+process_logs()
